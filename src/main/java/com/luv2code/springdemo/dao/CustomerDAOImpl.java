@@ -1,5 +1,6 @@
 package com.luv2code.springdemo.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -72,6 +73,21 @@ public class CustomerDAOImpl implements CustomerDAO {
 		theQuery.executeUpdate();		
 	}
 
+	@Override
+	public List<Customer> getCustomerByEmail(String email) {
+		Session currentSession = sessionFactory.getCurrentSession();
+
+		// delete object with primary key
+		Query theQuery =
+				currentSession.createQuery("from Customer where email=:customerEmail",
+						Customer.class);
+		theQuery.setParameter("customerEmail", email);
+
+
+
+		List<Customer>customers=theQuery.getResultList();
+		return  customers;
+	}
 }
 
 

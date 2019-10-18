@@ -42,6 +42,12 @@ public class CustomerServiceImpl implements CustomerService {
 		
 		customerDAO.deleteCustomer(theId);
 	}
+
+	@Override
+	@Transactional
+	public List<Customer> getCustomerByEmail(String email) {
+		return customerDAO.getCustomerByEmail(email);
+	}
 }
 
 

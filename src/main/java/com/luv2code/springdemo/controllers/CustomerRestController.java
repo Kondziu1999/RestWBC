@@ -5,9 +5,11 @@ import com.luv2code.springdemo.entity.Customer;
 import com.luv2code.springdemo.exceptions.CustomerNotFoundException;
 import com.luv2code.springdemo.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController

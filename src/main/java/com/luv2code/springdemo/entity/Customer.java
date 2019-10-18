@@ -1,5 +1,7 @@
 package com.luv2code.springdemo.entity;
 
+import com.luv2code.springdemo.validation.Email;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,7 +23,7 @@ public class Customer {
 	
 	@Column(name="last_name")
 	private String lastName;
-	
+
 	@Column(name="email")
 	private String email;
 	
