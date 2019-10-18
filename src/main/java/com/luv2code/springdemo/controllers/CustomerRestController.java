@@ -35,7 +35,7 @@ public class CustomerRestController {
     }
     //@ResponseBody is added automagically
     @PostMapping("/customers")
-    public Customer addCustomer(@RequestBody @Valid Customer theCustomer){
+    public Customer addCustomer(@RequestBody Customer theCustomer){
         //setting id to zero will result in creating new Customer in DAO
         // since saveOrUpadate method accept check id which is in this case
         // equals to zero (null)
@@ -44,6 +44,21 @@ public class CustomerRestController {
         return theCustomer;
 
     }
+    @PutMapping("/customers")
+    public Customer updateCustomer(@RequestBody Customer theCustomer){
+        customerService.saveCustomer(theCustomer);
 
+        return theCustomer;
+    }
+    @DeleteMapping("/customers/{customerId}")
+    public String  deleteCustomer(@PathVariable int customerId){
+        Customer tempCustomer=customerService.getCustomer(customerId);
+
+        if(tempCustomer==null){
+            throw new CustomerNotFoundException("Customer not found id: "+customerId);
+        }
+        customerService.deleteCustomer(customerId);
+        return "Deleted customer id : "+customerId;
+    }
 
 }

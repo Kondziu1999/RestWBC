@@ -16,17 +16,22 @@ import org.springframework.core.env.Environment;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 @Configuration
 @EnableWebMvc
 @EnableTransactionManagement
 @ComponentScan("com.luv2code.springdemo")
-@PropertySource({ "classpath:persistence-mysql.properties" })
+@PropertySource({ "classpath:persistence-mysql.properties",
+		"classpath:security-persistence-mysql.properties"})
 public class DemoAppConfig implements WebMvcConfigurer {
 
 	@Autowired
@@ -35,6 +40,13 @@ public class DemoAppConfig implements WebMvcConfigurer {
 	private Logger logger = Logger.getLogger(getClass().getName());
 	
 	// define a bean for ViewResolver ( for MVC)
+
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry
+				.addResourceHandler("/resources/**")
+				.addResourceLocations("/resources/");
+	}
 
 	@Bean
 	public DataSource myDataSource() {
@@ -116,8 +128,56 @@ public class DemoAppConfig implements WebMvcConfigurer {
 		txManager.setSessionFactory(sessionFactory);
 
 		return txManager;
-	}	
-	
+	}
+
+	//security data source
+	@Bean
+	public DataSource securityDataSource() {
+
+		// create connection pool
+		ComboPooledDataSource securityDataSource
+				= new ComboPooledDataSource();
+
+		// set the jdbc driver class
+
+		try {
+			securityDataSource.setDriverClass(env.getProperty("security.jdbc.driver"));
+		} catch (PropertyVetoException exc) {
+			throw new RuntimeException(exc);
+		}
+
+		// log the connection props
+		// for sanity's sake, log this info
+		// just to make sure we are REALLY reading data from properties file
+
+		logger.info(">>> security.jdbc.url=" + env.getProperty("security.jdbc.url"));
+		logger.info(">>> security.jdbc.user=" + env.getProperty("security.jdbc.user"));
+
+
+		// set database connection props
+
+		securityDataSource.setJdbcUrl(env.getProperty("security.jdbc.url"));
+		securityDataSource.setUser(env.getProperty("security.jdbc.user"));
+		securityDataSource.setPassword(env.getProperty("security.jdbc.password"));
+
+		// set connection pool props
+
+		securityDataSource.setInitialPoolSize(
+				getIntProperty("security.connection.pool.initialPoolSize"));
+
+		securityDataSource.setMinPoolSize(
+				getIntProperty("security.connection.pool.minPoolSize"));
+
+		securityDataSource.setMaxPoolSize(
+				getIntProperty("security.connection.pool.maxPoolSize"));
+
+		securityDataSource.setMaxIdleTime(
+				getIntProperty("security.connection.pool.maxIdleTime"));
+
+		return securityDataSource;
+	}
+
+
 }
 
 
