@@ -35,7 +35,7 @@ public class CustomerRestController {
     }
     //@ResponseBody is added automagically
     @PostMapping("/customers")
-    public Customer addCustomer(@RequestBody Customer theCustomer){
+    public Customer addCustomer(@RequestBody @Valid Customer theCustomer){
         //setting id to zero will result in creating new Customer in DAO
         // since saveOrUpadate method accept check id which is in this case
         // equals to zero (null)
