@@ -6,10 +6,7 @@ import com.luv2code.springdemo.exceptions.CustomerNotFoundException;
 import com.luv2code.springdemo.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -34,5 +31,17 @@ public class CustomerRestController {
         }
         return theCustomer;
     }
+    //@ResponseBody is added automagically
+    @PostMapping("/customers")
+    public Customer addCustomer(@RequestBody Customer theCustomer){
+        //setting id to zero will result in creating new Customer in DAO
+        // since saveOrUpadate method accept check id which is in this case
+        // equals to zero (null)
+        theCustomer.setId(0);
+        customerService.saveCustomer(theCustomer);
+        return theCustomer;
+
+    }
+
 
 }
